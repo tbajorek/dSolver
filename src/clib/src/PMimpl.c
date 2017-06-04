@@ -1,12 +1,12 @@
 
 #include <jni.h>
-#include "PMimpl.h"
+#include "server_PMimpl.h"
 
 /* declare computational function implemented elsewhere */
 int PowerMean( float *pVector, int vec_len, float Power, float *pMean );
 
 /* provide JNI style definition of Java callable C function */
-JNIEXPORT jint JNICALL	Java_PMimpl_PowerMeanWrapper(
+JNIEXPORT jint JNICALL	Java_server_PMimpl_PowerMeanWrapper(
 	/* JNI environment structure */	JNIEnv      *pEnv,
 	/* native method's object */	jobject      object,
 	/* native method's arguments */	jfloatArray  vector,
@@ -31,5 +31,3 @@ JNIEXPORT jint JNICALL	Java_PMimpl_PowerMeanWrapper(
 
 	return( errorCode );
 }
-
-

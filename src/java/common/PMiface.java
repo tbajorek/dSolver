@@ -1,3 +1,5 @@
+package common;
+
 import java.rmi.*;
 
 public interface PMiface extends Remote
