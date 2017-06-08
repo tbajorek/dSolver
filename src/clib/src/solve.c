@@ -96,11 +96,13 @@ int solve(double *a, int rows, int cols, double *x, double *b) {
     int i,j,k,s, errorCode;
     //STEP 1 - calculating y
     setVValue(x, 1, getVValue(b, 1));//first value of Y
+    #pragma omp parallel for
     for (i = 2; i <= rows; ++i) {//for next n values of Y
         setVValue(x, i, getVValue(b, i) - calculateLsum(a, x, i, cols));
     }
     //STEP 2
     setVValue(x, rows, getVValue(x, rows)/getMValue(a, rows, rows, cols));//last value of X
+    #pragma omp parallel for
     for (i = rows - 1; i > 0; --i) {//every next value of X
         setVValue(x, i, (getVValue(x, i) - calculateRsum(a, x, i, rows, cols))/getMValue(a, i, i, cols));
     }

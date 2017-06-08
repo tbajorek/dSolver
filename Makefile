@@ -46,8 +46,8 @@ server: $(TARGETDIR) common
 	gcc -fPIC -c src/clib/src/*.c -I$(JAVA_HOME)/include \
 				-I$(JAVA_HOME)/include/linux -Isrc/clib/include
 	@echo 'creating shared (dynamic) library...'
-	ld -shared  -o $(LIBDIR)/libDecomposeWrapper.so decompose.o Decomposer.o
-	ld -shared  -o $(LIBDIR)/libSolveWrapper.so solve.o Solver.o
+	ld -shared  -fopenmp -o $(LIBDIR)/libDecomposeWrapper.so decompose.o Decomposer.o
+	ld -shared  -fopenmp -o $(LIBDIR)/libSolveWrapper.so solve.o Solver.o
 	rm -f *.o
 
 client: $(TARGETDIR) common# client.java # client files

@@ -38,10 +38,12 @@ int decompose(double *a, int rows, int cols) {
     int i,j,k,s, errorCode;
     for(k=1; k <= cols-1; k++){
         // STEP 1
+        #pragma omp parallel for
         for (s=k+1; s <= rows; s++) {
             setValue(a, s, k, cols, getValue(a, s, k, cols)/getValue(a, k, k, cols));
         }
         // STEP 2
+        #pragma omp parallel for
         for (i = k+1; i <= cols; i++) {
             for (j = k+1; j <= rows; j++){
                 setValue(a, i, j, cols, getValue(a, i, j, cols) - getValue(a, i, k, cols) * getValue(a, k, j, cols));
