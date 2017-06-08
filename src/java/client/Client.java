@@ -3,28 +3,13 @@ package client;
 import java.rmi.*;
 import common.*;
 import java.io.FileNotFoundException;
-import server.*;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
+
+/**
+ * Client class which provides all client's functionality
+ */
 public class Client {
-    // static
-    // {
-    // 	System.loadLibrary("PowerMeanWrapper");
-    // }
-
-    private static Matrix decompose(String hostname, String port, Matrix a) throws RemoteException, NotBoundException {
-        String location = "//" + hostname + ":" + port + "/decompose";
-        Registry registry = LocateRegistry.getRegistry(Integer.valueOf(port));
-        DecomposeIface remoteServer = (DecomposeIface) registry.lookup(location);
-        return remoteServer.decompose(a);
-    }
-
-    private static Equations solve(String hostname, String port, Equations eq) throws RemoteException, NotBoundException {
-        String location = "//" + hostname + ":" + port + "/solve";
-        Registry registry = LocateRegistry.getRegistry(Integer.valueOf(port));
-        SolveIface remoteServer = (SolveIface) registry.lookup(location);
-        return remoteServer.solve(eq);
-    }
 
     public static void main( String arg[] ) throws Exception
     {
@@ -58,9 +43,43 @@ public class Client {
             System.out.println("Blad ladowania danych.");
         } catch(FileNotFoundException e) {
             System.out.println("Nie znaleziono pliku.");
+        } catch(ConnectException e) {
+            System.out.println("Blad polaczenia z zadanym serwerem. Sprawdz, czy jest on uruchomiony i osiagalny.");
         } catch(Exception e) {
             System.out.println("Wystapil nieoczekiwany wyjatek. Aplikacja zostanie zamknieta.");
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * Decompose the given matrix using server running on the passed hostname and port
+     * @param hostname Host name of a decomposition server
+     * @param port Port of the server
+     * @param a Matrix to decompose
+     * @return
+     * @throws RemoteException
+     * @throws NotBoundException 
+     */
+    private static Matrix decompose(String hostname, String port, Matrix a) throws RemoteException, NotBoundException {
+        String location = "//" + hostname + ":" + port + "/decompose";
+        Registry registry = LocateRegistry.getRegistry(Integer.valueOf(port));
+        DecomposeIface remoteServer = (DecomposeIface) registry.lookup(location);
+        return remoteServer.decompose(a);
+    }
+
+    /**
+     * Solve the given system of linear equations using server running on the passed hostname and port
+     * @param hostname Host name of a decomposition server
+     * @param port Port of the server
+     * @param eq System of equations to solve
+     * @return
+     * @throws RemoteException
+     * @throws NotBoundException 
+     */
+    private static Equations solve(String hostname, String port, Equations eq) throws RemoteException, NotBoundException {
+        String location = "//" + hostname + ":" + port + "/solve";
+        Registry registry = LocateRegistry.getRegistry(Integer.valueOf(port));
+        SolveIface remoteServer = (SolveIface) registry.lookup(location);
+        return remoteServer.solve(eq);
     }
 }

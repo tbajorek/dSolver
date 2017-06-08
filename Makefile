@@ -23,15 +23,14 @@ all:    server client java.policy # make all
 	@echo 'printing Java policy file to be used...'
 	cat java.policy
 	@echo '----------------------------------------'
-	@echo "Start RMI registry (server-side name server) in other directory (& == in background):"
-	@echo "and on default port 1099 (or some other unused TCP port):"
-	@echo "( cd /tmp ; CLASSPATH=$(CLASSPATH) $(JAVA_HOME)/bin/rmiregistry 1099 -Djava.rmi.server.codebase=file://$(PWD)/ ) &"
+	@echo "Start server for decomposition with most basic (too open) security policy file (with optional registry port) (& == in background):"
+	@echo "( LD_LIBRARY_PATH=$(LIBDIR) $(JAVA_HOME)/bin/java -cp $(CLASSPATH) -Djava.security.policy=$(PWD)/java.policy -Djava.rmi.server.codebase=file://$(CLASSESDIR)/ server.Decomposer <$(DPORT)> ) &"
 	@echo '----------------------------------------'
-	@echo "Start server with most basic (too open) security policy file (with optional registry port) (& == in background):"
-	@echo "( LD_LIBRARY_PATH=$(LIBDIR) $(JAVA_HOME)/bin/java -cp $(CLASSPATH) -Djava.security.policy=$(PWD)/java.policy -Djava.rmi.server.codebase=file://$(CLASSESDIR)/ server.PMimpl ) &"
+	@echo "Start server for solving with most basic (too open) security policy file (with optional registry port) (& == in background):"
+	@echo "( LD_LIBRARY_PATH=$(LIBDIR) $(JAVA_HOME)/bin/java -cp $(CLASSPATH) -Djava.security.policy=$(PWD)/java.policy -Djava.rmi.server.codebase=file://$(CLASSESDIR)/ server.Solver <$(SPORT)> ) &"
 	@echo '----------------------------------------'
 	@echo "Start client:"
-	@echo "$(JAVA_HOME)/bin/java -Djava.security.policy=$(PWD)/java.policy client <$(SERVERHOST)> <power> <$(PORT)>"
+	@echo "$(JAVA_HOME)/bin/java -Djava.security.policy=$(PWD)/java.policy client.Client <$(DHOST)> <$(DPORT)> <$(SHOST)> <$(SPORT)>"
 
 server: $(TARGETDIR) common
 	@echo 'compiling server (Java)...'
