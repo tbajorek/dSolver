@@ -40,8 +40,10 @@ public class Decomposer extends UnicastRemoteObject implements DecomposeIface
      */
     @Override
     public Matrix decompose(Matrix m) throws RemoteException {
+        long startTime = System.currentTimeMillis();
         int errorCode =  decomposeWrapper(m.a, m.rows, m.cols);
-        System.out.println("Status operacji dekompozycji LU: "+errorCode);
+        long stopTime = System.currentTimeMillis();
+        System.out.println("Status operacji dekompozycji LU: "+errorCode+", czas wykonania: "+(stopTime-startTime));
         return m;
     }
     
@@ -70,7 +72,8 @@ public class Decomposer extends UnicastRemoteObject implements DecomposeIface
             Registry reg = LocateRegistry.createRegistry(Integer.valueOf(port));
             String str = "//" + hostName + ":" + port + "/decompose";
             reg.bind(str, server);
-            System.err.println("Serwer zostal uruchomiony.");
+            System.out.println("Serwer zostal uruchomiony.");
+            System.out.println("Lokalizacja: "+str);
         } catch(Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

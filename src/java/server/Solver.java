@@ -41,8 +41,10 @@ public class Solver extends UnicastRemoteObject implements SolveIface {
      */
     @Override
     public Equations solve(Equations eq) throws RemoteException {
+        long startTime = System.currentTimeMillis();
         int errorCode =  solveWrapper(eq.A.a, eq.A.rows, eq.A.cols, eq.x.v, eq.b.v);
-        System.out.println("Status operacji rozwiazywania ukladu rownan: "+errorCode);
+        long stopTime = System.currentTimeMillis();
+        System.out.println("Status operacji rozwiazywania ukladu rownan: "+errorCode+", czas wykonania: "+(stopTime-startTime));
         return eq;
     }
     
@@ -71,7 +73,8 @@ public class Solver extends UnicastRemoteObject implements SolveIface {
             Registry reg = LocateRegistry.createRegistry(Integer.valueOf(port));
             String str = "//" + hostName + ":" + port + "/solve";
             reg.bind(str, server);
-            System.err.println("Serwer zostal uruchomiony.");
+            System.out.println("Serwer zostal uruchomiony.");
+            System.out.println("Lokalizacja: "+str);
         } catch(Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

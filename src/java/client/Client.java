@@ -13,6 +13,7 @@ public class Client {
 
     public static void main( String arg[] ) throws Exception
     {
+        long startAllTime = System.currentTimeMillis();
         if( arg.length < 4 )
         {
             System.out.println( "Specify hostname and power registry port." );
@@ -23,22 +24,37 @@ public class Client {
         String decomposerPort = arg[1]; /* Decomposer port */
         String solverHostName = arg[2]; /* Decomposer server */
         String solverPort = arg[3]; /* Decomposer port */
-        String afile = (arg.length >= 5)?arg[4]:"resources/A2.txt";
-        String bfile = (arg.length >= 6)?arg[5]:"resources/b2.txt";
-        String xfile = (arg.length >= 7)?arg[6]:"resources/x2.txt";
+        String afile = (arg.length >= 5)?arg[4]:"resources/A3.txt";
+        String bfile = (arg.length >= 6)?arg[5]:"resources/b3.txt";
+        String xfile = (arg.length >= 7)?arg[6]:"resources/x3.txt";
 
         try {
             if( System.getSecurityManager() == null ) {
                 System.setSecurityManager( new SecurityManager() );
             }
+            System.out.println("Ładowanie danych macierzy A...");
             Matrix a = new Matrix(afile);
+            System.out.println("Ładowanie danych wektora b...");
             Equations eq = new Equations(a, new Vector(a.rows), new Vector(bfile));
             
+            System.out.println("Rozklad LU..");
+            long startDecTime = System.currentTimeMillis();
             eq.A = decompose(decomposerHostName, decomposerPort, eq.A);
-
+            long stopDecTime = System.currentTimeMillis();
+            
+            System.out.println("Rozwiazywanie ukladu rownan...");
+            long startSolTime = System.currentTimeMillis();
             eq = solve(solverHostName, solverPort, eq);
+            long stopSolTime = System.currentTimeMillis();
+            
             eq.x.saveToFile(xfile);
             eq.A.saveToFile("resources/LU.txt");
+            System.out.println("Uklad zostal rozwiazany. Wyniki znajduja sie w pliku "+xfile);
+            long stopAllTime = System.currentTimeMillis();
+            System.out.println("-------------------------------------");
+            System.out.println("Calkowity czas uruchomienia: "+(stopAllTime-startAllTime));
+            System.out.println("Czas rozkladu macierzy: "+(stopDecTime-startDecTime));
+            System.out.println("Czas rozwiazania ukladu: "+(stopSolTime-startSolTime));
         } catch(MatrixLoaderException | VectorLoaderException e) {
             System.out.println("Blad ladowania danych.");
         } catch(FileNotFoundException e) {
