@@ -82,7 +82,7 @@ public class Client {
      */
     private static Matrix decompose(String hostname, String port, Matrix a) throws RemoteException, NotBoundException {
         String location = "//" + hostname + ":" + port + "/decompose";
-        Registry registry = LocateRegistry.getRegistry(Integer.valueOf(port));
+        Registry registry = LocateRegistry.getRegistry("rmiServer",Integer.valueOf(port));
         DecomposeIface remoteServer = (DecomposeIface) registry.lookup(location);
         return remoteServer.decompose(a);
     }

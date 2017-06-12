@@ -17,18 +17,18 @@ public class Decomposer extends UnicastRemoteObject implements DecomposeIface
 {
     /**
      * Initialization of the decomposer server
-     * @throws RemoteException 
+     * @throws RemoteException
      */
     public Decomposer() throws RemoteException {
         super();
     }
-    
+
     /**
      * Wrapper of a native function to decompose the given matrix
      * @param a Values of a fraction's matrix
      * @param rows Number of rows
      * @param cols Number of columns
-     * @return 
+     * @return
      */
     public native static int decomposeWrapper(double a[], int rows, int cols);
 
@@ -36,7 +36,7 @@ public class Decomposer extends UnicastRemoteObject implements DecomposeIface
      * Decompose the passed matrix to LU matrix
      * @param m Matrix to decompose
      * @return
-     * @throws RemoteException 
+     * @throws RemoteException
      */
     @Override
     public Matrix decompose(Matrix m) throws RemoteException {
@@ -46,14 +46,14 @@ public class Decomposer extends UnicastRemoteObject implements DecomposeIface
         System.out.println("Status operacji dekompozycji LU: "+errorCode+", czas wykonania: "+(stopTime-startTime));
         return m;
     }
-    
+
     /**
      * Loading of a native library
      */
     static {
         System.loadLibrary("DecomposeWrapper");
     }
-    
+
     /**
      * Main function of the decomposer server
      * @param args Arguments passed by command line
@@ -70,6 +70,7 @@ public class Decomposer extends UnicastRemoteObject implements DecomposeIface
             Decomposer server = new Decomposer();
 
             Registry reg = LocateRegistry.createRegistry(Integer.valueOf(port));
+            reg.rebind("rmiServer", server );
             String str = "//" + hostName + ":" + port + "/decompose";
             reg.bind(str, server);
             System.out.println("Serwer zostal uruchomiony.");
