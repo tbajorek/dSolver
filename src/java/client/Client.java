@@ -14,9 +14,10 @@ public class Client {
     public static void main( String arg[] ) throws Exception
     {
         long startAllTime = System.currentTimeMillis();
-        if( arg.length < 4 )
+        if( arg.length < 7 )
         {
-            System.out.println( "Specify hostname and power registry port." );
+            System.out.println( "Prosze podac nazwy hostow, numery portow " +
+                                "oraz sciezki do wymaganych plikow." );
             return;
         }
 
@@ -24,9 +25,12 @@ public class Client {
         String decomposerPort = arg[1]; /* Decomposer port */
         String solverHostName = arg[2]; /* Decomposer server */
         String solverPort = arg[3]; /* Decomposer port */
-        String afile = (arg.length >= 5)?arg[4]:"resources/A3.txt";
-        String bfile = (arg.length >= 6)?arg[5]:"resources/b3.txt";
-        String xfile = (arg.length >= 7)?arg[6]:"resources/x3.txt";
+        String afile = arg[4]; /* File with A matrix */
+        String bfile = arg[5]; /* File with b vector */
+        String xfile = arg[6]; /* File path where computing results will be saved */
+        // String afile = (arg.length >= 5)?arg[4]:"resources/A3.txt";
+        // String bfile = (arg.length >= 6)?arg[5]:"resources/b3.txt";
+        // String xfile = (arg.length >= 7)?arg[6]:"resources/x3.txt";
 
         try {
             if( System.getSecurityManager() == null ) {
@@ -36,17 +40,17 @@ public class Client {
             Matrix a = new Matrix(afile);
             System.out.println("Ładowanie danych wektora b...");
             Equations eq = new Equations(a, new Vector(a.rows), new Vector(bfile));
-            
+
             System.out.println("Rozklad LU..");
             long startDecTime = System.currentTimeMillis();
             eq.A = decompose(decomposerHostName, decomposerPort, eq.A);
             long stopDecTime = System.currentTimeMillis();
-            
+
             System.out.println("Rozwiazywanie ukladu rownan...");
             long startSolTime = System.currentTimeMillis();
             eq = solve(solverHostName, solverPort, eq);
             long stopSolTime = System.currentTimeMillis();
-            
+
             eq.x.saveToFile(xfile);
             eq.A.saveToFile("resources/LU.txt");
             System.out.println("Uklad zostal rozwiazany. Wyniki znajduja sie w pliku "+xfile);
@@ -66,7 +70,7 @@ public class Client {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Decompose the given matrix using server running on the passed hostname and port
      * @param hostname Host name of a decomposition server
@@ -74,7 +78,7 @@ public class Client {
      * @param a Matrix to decompose
      * @return
      * @throws RemoteException
-     * @throws NotBoundException 
+     * @throws NotBoundException
      */
     private static Matrix decompose(String hostname, String port, Matrix a) throws RemoteException, NotBoundException {
         String location = "//" + hostname + ":" + port + "/decompose";
@@ -90,7 +94,7 @@ public class Client {
      * @param eq System of equations to solve
      * @return
      * @throws RemoteException
-     * @throws NotBoundException 
+     * @throws NotBoundException
      */
     private static Equations solve(String hostname, String port, Equations eq) throws RemoteException, NotBoundException {
         String location = "//" + hostname + ":" + port + "/solve";
