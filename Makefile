@@ -112,7 +112,6 @@ help:
 	@echo 'common   - Compiles Java common package.'
 	@echo	'           Can trigger $(TARGETDIR) task.'
 	@echo '$(TARGETDIR)   - Creates directories structure for output files.'
-	@echo	'           Can trigger $(TARGETDIR) task.'
 	@echo 'clean    - Removes JNI header files and target directory with content.'
 	@echo 'runclient- Runs client. Default parameters:'
 	@echo '          	DHOST=$(DHOST)   Server host to decompose LU'
